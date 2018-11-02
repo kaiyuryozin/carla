@@ -17,14 +17,14 @@ namespace client {
 
   Waypoint::~Waypoint() = default;
 
-  std::vector<SharedPtr<Waypoint>> Waypoint::Next(double distance) const {
+  SharedPtr<Waypoint> Waypoint::Next(double distance) const {
     auto waypoints = _waypoint.Next(distance);
-    std::vector<SharedPtr<Waypoint>> result;
-    result.reserve(waypoints.size());
+    // std::vector<SharedPtr<Waypoint>> result;
+    // result.reserve(waypoints.size());
     for (auto &waypoint : waypoints) {
-      result.emplace_back(SharedPtr<Waypoint>(new Waypoint(_parent, std::move(waypoint))));
+      return SharedPtr<Waypoint>(new Waypoint(_parent, std::move(waypoint)));
     }
-    return result;
+    return nullptr;
   }
 
 } // namespace client

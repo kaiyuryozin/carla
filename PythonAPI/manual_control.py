@@ -167,7 +167,7 @@ class World(object):
                 actor.destroy()
 
     def _get_random_blueprint(self):
-        bp = random.choice(self.world.get_blueprint_library().filter('vehicle'))
+        bp = random.choice(self.world.get_blueprint_library().filter('tesla'))
         if bp.has_attribute('color'):
             color = random.choice(bp.get_attribute('color').recommended_values)
             bp.set_attribute('color', color)
@@ -463,7 +463,7 @@ class CameraManager(object):
 # -- game_loop() ---------------------------------------------------------------
 # ==============================================================================
 
-
+import time
 def game_loop(args):
     pygame.init()
     pygame.font.init()
@@ -479,9 +479,16 @@ def game_loop(args):
 
         hud = HUD(args.width, args.height)
         world = World(client.get_world(), hud)
+        world.vehicle.set_simulate_physics(False)
         controller = KeyboardControl(world, args.autopilot)
 
+        time.sleep(1)
+
+        m = world.world.get_map()
+        w = m.get_waypoint(world.vehicle.get_location())
+
         clock = pygame.time.Clock()
+        count = 0
         while True:
             clock.tick_busy_loop(60)
             if controller.parse_events(world, clock):
@@ -489,6 +496,23 @@ def game_loop(args):
             world.tick(clock)
             world.render(display)
             pygame.display.flip()
+            if count % 10 == 0:
+                w = w.next(1.0)
+                # print(nexts)
+                # for x in nexts:
+                #     print(x)
+                # # w = random.choice(nexts)
+                # w = nexts[0]
+                if w is None:
+                    raise Exception("aaaaarrrgggg!!")
+                print(w)
+                t = w.transform
+                t.location.z = 3
+                # t.rotation.yaw += 180
+                print(t)
+                world.vehicle.set_transform(t)
+                count = 0
+            count += 1
 
     finally:
 

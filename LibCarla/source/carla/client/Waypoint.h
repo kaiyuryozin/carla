@@ -22,7 +22,7 @@ namespace client {
 
     ~Waypoint();
 
-    const geom::Transform &GetTransform() const {
+    geom::Transform GetTransform() const {
       return _waypoint.GetTransform();
     }
 
@@ -34,7 +34,7 @@ namespace client {
       return _waypoint.GetLaneId();
     }
 
-    std::vector<SharedPtr<Waypoint>> Next(double distance) const;
+    SharedPtr<Waypoint> Next(double distance) const;
 
   private:
 
